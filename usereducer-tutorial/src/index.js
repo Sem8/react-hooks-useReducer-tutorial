@@ -1,25 +1,44 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useRef } from "react";
 import ReactDOM from "react-dom";
 // import App from './App';
 
-function Count() {
-  const [count, dispatch] = useReducer((state, action) => {
-    switch (action) {
+function ShoppingList() {
+  const inputRef = useRef();
+  const [items, dispatch] = useReducer((state, action) => {
+    switch (action.type) {
       case "add":
-        return state + 1;
-      case "-":
-        return state - 1;
-      default:
-        return state;
+        return [
+          ...state,
+          {
+            id: state.length,
+            name: action.name
+          }
+        ];
     }
-  }, 0);
+  }, []);
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    dispatch({
+      type: "add",
+      name: inputRef.current.value
+    });
+    inputRef.current.value = "";
+  }
+
   return (
-    <div>
-      {count}
-      <button onClick={() => dispatch("add")}>Increment</button>
-      <button onClick={() => dispatch("-")}>Decrement</button>
-    </div>
+    <>
+      <form onSubmit={handleSubmit}>
+        <input ref={inputRef} />
+      </form>
+
+      <ul>
+        {items.map(item => (
+          <li key={item.id}>{item.name}</li>
+        ))}
+      </ul>
+    </>
   );
 }
 
-ReactDOM.render(<Count />, document.getElementById("root"));
+ReactDOM.render(<ShoppingList />, document.getElementById("root"));
