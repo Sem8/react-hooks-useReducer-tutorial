@@ -14,6 +14,10 @@ function ShoppingList() {
             name: action.name
           }
         ];
+        case 'remove':
+            return state.filter((_, index) => index != action.index)
+      default:
+        return state;
     }
   }, []);
 
@@ -33,8 +37,13 @@ function ShoppingList() {
       </form>
 
       <ul>
-        {items.map(item => (
-          <li key={item.id}>{item.name}</li>
+        {items.map((item, index) => (
+          <li key={item.id}>
+            {item.name}
+            <button onClick={() => dispatch({ type: "remove", index })}>
+              X
+            </button>
+          </li>
         ))}
       </ul>
     </>
